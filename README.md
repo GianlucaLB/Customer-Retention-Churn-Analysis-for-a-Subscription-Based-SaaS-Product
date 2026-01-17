@@ -37,7 +37,9 @@ This project analyzes customer churn for a fictional subscription-based telecom/
 ·Number of active services
 
 •Built an end-to-end Power BI dashboard to communicate insights clearly
-<img width="1480" height="845" alt="GLB_dashboard" src="https://github.com/user-attachments/assets/8b1df370-a56d-4f17-87fe-00202088610d" />
+
+<img width="1480" height="845" alt="GLB_dashboard" src="https://github.com/user-attachments/assets/6c5dc09b-f07e-45d7-a42d-192d5ba2dd70" />
+
 
 
 **Key Insights**
