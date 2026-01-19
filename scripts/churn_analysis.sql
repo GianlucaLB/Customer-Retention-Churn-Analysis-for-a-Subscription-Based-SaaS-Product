@@ -1,15 +1,16 @@
 /* After completing the initial data exploration, I moved deeper into the analysis by answering the main business questions related to customer churn.*/
 
-/*1. Overall Churn Rate
+/*1.Overall Churn Rate
 
 Since the dataset does not include a numeric churn column, I created one using a CASE statement based on the Customer_status field.
 This allowed me to calculate the company’s overall churn rate.*/
 
-WITH cte_churn AS (
-SELECT
-Customer_id,
-CASE WHEN Customer_status = 'Churned' THEN 1 ELSE 0 END AS churn
-FROM customer_churn
+WITH cte_churn AS 
+(
+	SELECT
+	Customer_id,
+	CASE WHEN Customer_status = 'Churned' THEN 1 ELSE 0 END AS churn
+	FROM customer_churn
 )
 
 SELECT
@@ -20,21 +21,21 @@ FROM cte_churn
 
 /* 2. Churn by Customer Tenure
 
-Next, I analyzed churn based on how long customers had been with the company.
+I analyzed churn based on how long customers had been with the company.
 Customers were grouped into tenure buckets measured in months. */
 
-WITH cte_buckets_months AS (
-SELECT 
-CASE
-	WHEN Tenure_in_months BETWEEN 0 AND 6 THEN '0-6 months'
-	WHEN Tenure_in_months BETWEEN 7 AND 12 THEN '7-12 Months'
-	WHEN Tenure_in_months BETWEEN 13 AND 24 THEN '13-24 Months'
-	ELSE '25+ Months'
-END AS buckets_months,
-CASE WHEN Customer_status = 'Churned' THEN 1 ELSE 0 END AS churn
-FROM customer_churn
+WITH cte_buckets_months AS 
+(
+	SELECT 
+	CASE
+		WHEN Tenure_in_months BETWEEN 0 AND 6 THEN '0-6 months'
+		WHEN Tenure_in_months BETWEEN 7 AND 12 THEN '7-12 Months'
+		WHEN Tenure_in_months BETWEEN 13 AND 24 THEN '13-24 Months'
+		ELSE '25+ Months'
+	END AS buckets_months,
+	CASE WHEN Customer_status = 'Churned' THEN 1 ELSE 0 END AS churn
+	FROM customer_churn
 )
-
 
 SELECT
 	buckets_months,
@@ -44,37 +45,27 @@ FROM cte_buckets_months
 GROUP BY buckets_months
 ORDER BY churn_rate DESC
 
-/* 3. Churn by Contract Type
 
-Finally, I analyzed churn across different contract types to understand how contract structure impacts customer retention.*/
+/* 3. Churn Category
 
-SELECT 
-Contract,
-CASE WHEN Customer_status = 'Churned' THEN 1 ELSE 0 END AS churn
-FROM customer_churn
-)
-
-WITH cte_contracts AS 
-SELECT
-	Contract,
-	SUM(churn) AS churned_customers,
-	ROUND(100.0 * SUM(churn) / COUNT(*), 2) AS churn_rate
-FROM cte_contracts
-GROUP BY Contract
-ORDER BY churn_rate DESC
+I analyzed churned customers by churn category to understand the main reasons why customers decided to leave the company.
+This analysis considers only customers with Customer_status = 'Churned' and counts how many customers fall into each churn category.*/
 	
---------------------
-
 SELECT
-churn_category,
-COUNT(*) Tot_customers
+	churn_category,
+	COUNT(*) Tot_customers
 FROM customer_churn
 WHERE Customer_status = 'Churned'
 GROUP BY churn_category
 ORDER BY Tot_customers DESC
 
------------------------
-WITH cte_age AS (
+/* 4 Churn By Age
+	
+To further segment churn behavior, I analyzed churn across different age groups.	
+Customers were grouped into age buckets using a CASE statement, and a churn indicator was created to calculate churn rates for each group.*/
+
+WITH cte_age AS
+(
 SELECT 
  CASE
         WHEN age BETWEEN 19 AND 29 THEN '19-29'
@@ -89,11 +80,32 @@ CASE WHEN Customer_status = 'Churned' THEN 1 ELSE 0 END AS churn
 FROM customer_churn
 )
 
-
 SELECT
 	age_bucket,
 	SUM(churn) AS churned_customers,
 	ROUND(100.0 * SUM(churn) / COUNT(*), 2) AS churn_rate
 FROM cte_age
 GROUP BY age_bucket
+ORDER BY churn_rate DESC
+
+/* 5. Churn by Contract Type
+
+Finally, I analyzed churn across different contract types to understand how contract structure impacts customer retention.*/
+
+WITH cte_contracts AS 
+(
+SELECT 
+	Contract,
+	CASE WHEN Customer_status = 'Churned' THEN 1 ELSE 0 END AS churn
+FROM customer_churn
+)
+
+
+SELECT
+	Contract,
+	COUNT(*) total_customers,
+	SUM(churn) AS churned_customers,
+	ROUND(100.0 * SUM(churn) / COUNT(*), 2) AS churn_rate
+FROM cte_contracts
+GROUP BY Contract
 ORDER BY churn_rate DESC
