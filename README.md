@@ -17,6 +17,10 @@ This project analyzes customer churn for a fictional subscription-based telecom/
 
 ·Number of active services
 
+·Age groups
+
+•What are the primary reasons customers leave the company?
+
 •What actions can the business take to reduce churn?
 
 ---
