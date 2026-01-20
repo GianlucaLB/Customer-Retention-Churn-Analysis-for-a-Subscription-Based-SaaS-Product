@@ -59,7 +59,7 @@ This project analyzes customer churn for a fictional subscription-based telecom/
 ---
 ## 📊 **Dashboard**
 
-<img width="1456" height="822" alt="GLB_dashboard" src="https://github.com/user-attachments/assets/d82f6511-ba6e-4c7b-9766-d64bc351632b" />
+<img width="1463" height="820" alt="GLB_dashboard" src="https://github.com/user-attachments/assets/aedb2175-80a2-4682-a143-0264a47ad62a" />
 
 
 ---
